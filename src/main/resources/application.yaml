@@ -1,0 +1,23 @@
+logging:
+  level:
+    com.woundeddragons: DEBUG
+    org.springframework: DEBUG
+server:
+  port: 8080
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate.jdbc.batch_size: 20
+      hibernate.cache.use_query_cache: false
+      hibernate.cache.use_second_level_cache: false
+      hibernate.cache.use_structured_entries: false
+      hibernate.cache.use_minimal_puts: false
+      hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
+  datasource:
+    url: jdbc:mysql://localhost:3306/security-starter
+    username: security-starter_app_db
+    password: security-starter_app_db
+    driverClassName: com.mysql.cj.jdbc.Driver
