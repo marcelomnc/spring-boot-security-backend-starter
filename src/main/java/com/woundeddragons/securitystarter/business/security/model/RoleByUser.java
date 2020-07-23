@@ -48,6 +48,10 @@ public class RoleByUser {
 
     @Override
     public String toString() {
-        return "com.woundeddragons.securitystarter.business.security.model.UserRole[ nmId=" + nmId + " ]";
+        return "com.woundeddragons.securitystarter.business.security.model.RoleByUser{" +
+                "nmId=" + nmId +
+                ", nmUserId=" + nmUserId +
+                ", nmRoleId=" + nmRoleId +
+                '}';
     }
 }

@@ -97,6 +97,19 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "com.woundeddragons.securitystarter.business.security.model.User[ nmId=" + nmId + " ]";
+        return "com.woundeddragons.securitystarter.business.security.model.User{" +
+                "nmId=" + nmId +
+                ", dsEmail='" + dsEmail + '\'' +
+                ", dsFirstName='" + dsFirstName + '\'' +
+                ", dsLastName='" + dsLastName + '\'' +
+                ", dsPassword='" + dsPassword + '\'' +
+                ", dtEmailVerifiedOn=" + dtEmailVerifiedOn +
+                ", yn2faEnabled=" + yn2faEnabled +
+                ", ds2faSecret='" + ds2faSecret + '\'' +
+                ", dtCreatedOn=" + dtCreatedOn +
+                ", dtLastLoginOn=" + dtLastLoginOn +
+                ", dtDeletedOn=" + dtDeletedOn +
+                ", rolesByUserCollection=" + rolesByUserCollection +
+                '}';
     }
 }

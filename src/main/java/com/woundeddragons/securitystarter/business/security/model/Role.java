@@ -65,6 +65,12 @@ public class Role implements Serializable {
 
     @Override
     public String toString() {
-        return "com.woundeddragons.securitystarter.business.security.model.Role[ nmId=" + nmId + " ]";
+        return "com.woundeddragons.securitystarter.business.security.model.Role{" +
+                "nmId=" + nmId +
+                ", dsName='" + dsName + '\'' +
+                ", dtCreatedOn=" + dtCreatedOn +
+                ", dtDeletedOn=" + dtDeletedOn +
+                ", usersByRoleCollection=" + usersByRoleCollection +
+                '}';
     }
 }
