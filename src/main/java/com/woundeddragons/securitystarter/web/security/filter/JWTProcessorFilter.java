@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woundeddragons.securitystarter.business.security.model.CustomUserDetails;
 import com.woundeddragons.securitystarter.business.security.service.CustomUserDetailsService;
 import com.woundeddragons.securitystarter.business.security.service.RoleByUserService;
-import com.woundeddragons.securitystarter.business.security.service.RoleService;
 import com.woundeddragons.securitystarter.web.security.api.Constants;
 import com.woundeddragons.securitystarter.web.security.api.v1.response.JWTProcessorResponse;
 import com.woundeddragons.securitystarter.web.security.common.WebSecurityConstants;
@@ -35,9 +34,6 @@ public class JWTProcessorFilter extends OncePerRequestFilter {
 
     @Autowired
     private RoleByUserService roleByUserService;
-
-    @Autowired
-    private RoleService roleService;
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
