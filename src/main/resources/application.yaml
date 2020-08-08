@@ -4,6 +4,8 @@ logging:
     org.springframework: DEBUG
 server:
   port: 8080
+  servlet:
+    context-path: securitystarter
 spring:
   jpa:
     show-sql: true
