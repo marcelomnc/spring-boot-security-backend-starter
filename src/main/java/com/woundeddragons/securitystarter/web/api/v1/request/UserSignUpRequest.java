@@ -2,6 +2,7 @@ package com.woundeddragons.securitystarter.web.api.v1.request;
 
 import com.woundeddragons.securitystarter.web.api.v1.validator.PasswordConfirmation;
 import com.woundeddragons.securitystarter.web.api.v1.validator.UniqueEmailUserSignup;
+import com.woundeddragons.securitystarter.web.api.v1.validator.ValidPassword;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,9 +20,8 @@ public class UserSignUpRequest extends UserDataRequest implements SecurityCreden
     @UniqueEmailUserSignup
     private String email;
     @NotEmpty(message = "You must send a password with this request.")
-    @Size(min = 10, max = 50)
+    @ValidPassword
     private String password;
     @NotEmpty(message = "You must send a password confirmation with this request.")
-    @Size(min = 10, max = 50)
     private String passwordConfirmation;
 }
