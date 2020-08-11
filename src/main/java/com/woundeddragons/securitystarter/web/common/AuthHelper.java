@@ -20,12 +20,7 @@ public class AuthHelper {
     private RoleByUserService roleByUserService;
 
     public AuthenticationResponse doAuthentication(User user, boolean loginProcessCompleted) {
-        //TODO: Logica para validar usuario deshabilitado, eliminado, etc
-        //throw XXXException dependiendo del caso
-
-        AuthenticationResponse toRet = null;
         Collection<RoleByUser> rolesByUser = null;
-
         if (loginProcessCompleted) {
             //Updating last login date for the user
             user.setDtLastLoginOn(new Date());
@@ -35,10 +30,9 @@ public class AuthHelper {
 
         String jwt = JWTBuilder.buildJWT(user, rolesByUser, !loginProcessCompleted);
 
-        toRet = new AuthenticationResponse();
+        AuthenticationResponse toRet = new AuthenticationResponse();
         toRet.setJwt(jwt);
         toRet.setMustVerify2FACode(!loginProcessCompleted);
-
         return toRet;
     }
 }
