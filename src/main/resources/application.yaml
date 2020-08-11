@@ -5,7 +5,7 @@ logging:
 server:
   port: 8080
   servlet:
-    context-path: securitystarter
+    context-path: /securitystarter
 spring:
   jpa:
     show-sql: true
