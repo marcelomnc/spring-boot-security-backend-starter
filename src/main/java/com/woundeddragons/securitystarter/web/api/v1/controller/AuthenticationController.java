@@ -37,7 +37,7 @@ public class AuthenticationController {
 
     @PostMapping(path = PATH)
     public ResponseEntity doAuthentication(@RequestBody @Valid AuthenticationRequest authenticationRequest) {
-        ResponseEntity toRet = null;
+        ResponseEntity toRet;
 
         try {
             Authentication authentication =
@@ -55,7 +55,7 @@ public class AuthenticationController {
             //USername no existe
             //PAssword no es
             //Usuario deshabilitado
-            int responseErrorCode = -1;
+            int responseErrorCode;
             String responseErrorMessage;
             if (e instanceof UsernameNotFoundException) {
                 responseErrorCode = 99;
