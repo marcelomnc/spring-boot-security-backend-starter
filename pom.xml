@@ -88,6 +88,11 @@
             <artifactId>aerogear-otp-java</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.passay</groupId>
+            <artifactId>passay</artifactId>
+            <version>1.6.0</version>
+        </dependency>
     </dependencies>
 
     <build>
