@@ -5,8 +5,12 @@ import com.woundeddragons.securitystarter.business.model.CustomUserDetails;
 import com.woundeddragons.securitystarter.business.service.CustomUserDetailsService;
 import com.woundeddragons.securitystarter.web.api.Constants;
 import com.woundeddragons.securitystarter.web.api.v1.response.JWTProcessorResponse;
+import com.woundeddragons.securitystarter.web.common.JWTUtils;
 import com.woundeddragons.securitystarter.web.common.WebSecurityConstants;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -82,22 +86,18 @@ public class JWTProcessorFilter extends OncePerRequestFilter {
         }
     }
 
-    private UsernamePasswordAuthenticationToken buildAuthenticationFromJWT(String jwt) throws ExpiredJwtException {
-        Claims claims = Jwts.parser()
-                .setSigningKey(WebSecurityConstants.JWT_SECRET)
-                .parseClaimsJws(jwt)
-                .getBody();
-
+    private UsernamePasswordAuthenticationToken buildAuthenticationFromJWT(String jwt) {
+        Claims claims = JWTUtils.parseClaims(jwt);
         // Extract the Username
         String username = claims.getSubject();
         CustomUserDetails customUserDetails = (CustomUserDetails) this.customUserDetailsService.loadUserByUsername(username);
         //TODO: Logica para validar usuario deshabilitado, eliminado, etc
         //throw XXXException dependiendo del caso
 
+        List<String> securityRolesList = JWTUtils.getSecurityRoles(claims);
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-        List<String> rolesList = (List<String>) claims.get(WebSecurityConstants.JWT_ROLES_CLAIM);
-        if (rolesList != null && !rolesList.isEmpty()) {
-            rolesList.stream().forEach(roleName -> {
+        if (securityRolesList != null && !securityRolesList.isEmpty()) {
+            securityRolesList.stream().forEach(roleName -> {
                 grantedAuthorities.add(new SimpleGrantedAuthority(roleName));
                 logger.debug("Added Granted Authority: " + roleName);
             });
