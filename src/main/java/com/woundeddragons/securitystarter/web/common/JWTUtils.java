@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-public class JWTBuilder {
+public class JWTUtils {
 
     public static String buildJWT(User user, Collection<RoleByUser> rolesByUser, boolean set2FACodeVerificationRole) {
         Date tokenIssuedAtDate = new Date();
@@ -25,18 +25,18 @@ public class JWTBuilder {
                 .setIssuedAt(tokenIssuedAtDate)
                 .setExpiration(tokenExpirationDate);
 
-        List<String> rolesList = new ArrayList<>();
+        List<String> securityRolesList = new ArrayList<>();
 
         if (set2FACodeVerificationRole) {
             //Set only 2FA_CODE_VERIFICATION_ROLE
-            rolesList.add(SecurityRole.ROLE_2FA_CODE_VERIFICATION.getName());
+            securityRolesList.add(SecurityRole.ROLE_2FA_CODE_VERIFICATION.getName());
         } else {
-            //Set all real user roles from db
+            //Set all real user security roles from db
             rolesByUser.stream().forEach(roleByUser -> {
-                rolesList.add(roleByUser.getNmRoleId().getDsName());
+                securityRolesList.add(roleByUser.getNmRoleId().getDsName());
             });
         }
-        claims.put(WebSecurityConstants.JWT_ROLES_CLAIM, rolesList);
+        claims.put(WebSecurityConstants.JWT_ROLES_CLAIM, securityRolesList);
 
         return Jwts.builder()
                 .setClaims(claims)
