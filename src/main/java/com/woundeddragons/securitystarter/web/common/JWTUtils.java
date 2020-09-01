@@ -43,4 +43,16 @@ public class JWTBuilder {
                 .signWith(SignatureAlgorithm.HS512, WebSecurityConstants.JWT_SECRET)
                 .compact();
     }
+
+    public static Claims parseClaims(String jwt) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(WebSecurityConstants.JWT_SECRET)
+                .parseClaimsJws(jwt)
+                .getBody();
+        return claims;
+    }
+
+    public static List<String> getSecurityRoles(Claims claims) {
+        return (List<String>) claims.get(WebSecurityConstants.JWT_ROLES_CLAIM);
+    }
 }
