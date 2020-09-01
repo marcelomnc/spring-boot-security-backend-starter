@@ -28,7 +28,7 @@ public class AuthHelper {
             rolesByUser = this.roleByUserService.findByUserId(user.getNmId());
         }
 
-        String jwt = JWTBuilder.buildJWT(user, rolesByUser, !loginProcessCompleted);
+        String jwt = JWTUtils.buildJWT(user, rolesByUser, !loginProcessCompleted);
 
         AuthenticationResponse toRet = new AuthenticationResponse();
         toRet.setJwt(jwt);
