@@ -10,9 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -52,15 +50,27 @@ public class AuthenticationController {
         } catch (AuthenticationException e) {
             //TODO: Validar las posibles razones del porque no autentico e informar al frontend (Error codes)
             //Codigos especificos para cada caso:
-            //USername no existe
-            //PAssword no es
-            //Usuario deshabilitado
+            //Username no existe
+            //Password no es
+            //Usuario deshabilitado, bloqueado, etc
             int responseErrorCode;
             String responseErrorMessage;
             if (e instanceof UsernameNotFoundException) {
                 responseErrorCode = 99;
                 responseErrorMessage = e.getMessage();
             } else if (e instanceof BadCredentialsException) {
+                responseErrorCode = 99;
+                responseErrorMessage = e.getMessage();
+            } else if (e instanceof LockedException) {
+                responseErrorCode = 99;
+                responseErrorMessage = e.getMessage();
+            } else if (e instanceof DisabledException) {
+                responseErrorCode = 99;
+                responseErrorMessage = e.getMessage();
+            } else if (e instanceof CredentialsExpiredException) {
+                responseErrorCode = 99;
+                responseErrorMessage = e.getMessage();
+            } else if (e instanceof AccountExpiredException) {
                 responseErrorCode = 99;
                 responseErrorMessage = e.getMessage();
             } else {
