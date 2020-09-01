@@ -1,6 +1,7 @@
 package com.woundeddragons.securitystarter.web.common;
 
 public class WebSecurityConstants {
+    //TODO: Extract this value to a property @value{} ?
     public static final String JWT_SECRET = "SecretKeyToGenJWTs";
     public static final String JWT_PREFIX = "Bearer ";
     public static final String JWT_ROLES_CLAIM = "roles";
