@@ -5,6 +5,7 @@ import com.woundeddragons.securitystarter.web.api.v1.Constants;
 import com.woundeddragons.securitystarter.web.api.v1.request.AuthenticationRequest;
 import com.woundeddragons.securitystarter.web.api.v1.response.AuthenticationResponse;
 import com.woundeddragons.securitystarter.web.common.AuthHelper;
+import com.woundeddragons.securitystarter.web.common.ErrorsEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,53 +35,41 @@ public class AuthenticationController {
     private AuthHelper authHelper;
 
     @PostMapping(path = PATH)
-    public ResponseEntity doAuthentication(@RequestBody @Valid AuthenticationRequest authenticationRequest) {
-        ResponseEntity toRet;
+    public ResponseEntity<AuthenticationResponse> doAuthentication(@RequestBody @Valid AuthenticationRequest authenticationRequest) {
+        ResponseEntity<AuthenticationResponse> toRet;
 
         try {
-            Authentication authentication =
+            final Authentication authentication =
                     this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword()));
             logger.debug("After authentication: " + authentication + ", name: " + authentication.getName() + ", principal: " + authentication.getPrincipal() + ", credentials: " + authentication.getCredentials());
 
-            CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+            final CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
 
-            AuthenticationResponse authenticationResponse = this.authHelper.doAuthentication(customUserDetails.getUser(), !customUserDetails.getUser().isYn2faEnabled());
+            final AuthenticationResponse authenticationResponse = this.authHelper.doAuthentication(customUserDetails.getUser(), !customUserDetails.getUser().isYn2faEnabled());
 
             toRet = ResponseEntity.ok().body(authenticationResponse);
         } catch (AuthenticationException e) {
-            //TODO: Validar las posibles razones del porque no autentico e informar al frontend (Error codes)
-            //Codigos especificos para cada caso:
-            //Username no existe
-            //Password no es
-            //Usuario deshabilitado, bloqueado, etc
-            int responseErrorCode;
-            String responseErrorMessage;
+            AuthenticationResponse authenticationResponse = new AuthenticationResponse();
+            logger.debug("Authentication for username '" + authenticationRequest.getUsername() + "' failed.", e);
+
+            ErrorsEnum errorsEnum = null;
             if (e instanceof UsernameNotFoundException) {
-                responseErrorCode = 99;
-                responseErrorMessage = e.getMessage();
+                errorsEnum = ErrorsEnum.USERNAME_NOT_FOUND;
             } else if (e instanceof BadCredentialsException) {
-                responseErrorCode = 99;
-                responseErrorMessage = e.getMessage();
-            } else if (e instanceof LockedException) {
-                responseErrorCode = 99;
-                responseErrorMessage = e.getMessage();
-            } else if (e instanceof DisabledException) {
-                responseErrorCode = 99;
-                responseErrorMessage = e.getMessage();
+                errorsEnum = ErrorsEnum.BAD_CREDENTIALS;
             } else if (e instanceof CredentialsExpiredException) {
-                responseErrorCode = 99;
-                responseErrorMessage = e.getMessage();
+                errorsEnum = ErrorsEnum.CREDENTIALS_EXPIRED;
+            } else if (e instanceof LockedException) {
+                errorsEnum = ErrorsEnum.ACCOUNT_LOCKED;
+            } else if (e instanceof DisabledException) {
+                errorsEnum = ErrorsEnum.ACCOUNT_DISABLED;
             } else if (e instanceof AccountExpiredException) {
-                responseErrorCode = 99;
-                responseErrorMessage = e.getMessage();
+                errorsEnum = ErrorsEnum.ACCOUNT_EXPIRED;
             } else {
-                responseErrorCode = 99;
-                responseErrorMessage = e.getMessage();
+                errorsEnum = ErrorsEnum.GENERIC_AUTH;
             }
 
-            logger.debug("Authentication for username '" + authenticationRequest.getUsername() + "' failed.", e);
-            AuthenticationResponse authenticationResponse = new AuthenticationResponse();
-            authenticationResponse.addResponseError(responseErrorCode, responseErrorMessage);
+            authenticationResponse.addResponseError(errorsEnum);
             toRet = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(authenticationResponse);
         }
 

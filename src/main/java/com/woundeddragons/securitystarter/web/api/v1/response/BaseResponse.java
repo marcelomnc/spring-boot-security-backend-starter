@@ -1,6 +1,7 @@
 package com.woundeddragons.securitystarter.web.api.v1.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.woundeddragons.securitystarter.web.common.ErrorsEnum;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,5 +26,9 @@ public class BaseResponse implements Serializable {
     public void addResponseError(int responseErrorCode, String responseErrorMessage) {
         ResponseError responseError = new ResponseError(responseErrorCode, responseErrorMessage);
         this.errors.add(responseError);
+    }
+
+    public void addResponseError(ErrorsEnum errorsEnum) {
+        this.addResponseError(errorsEnum.getCode(), errorsEnum.getMessage());
     }
 }

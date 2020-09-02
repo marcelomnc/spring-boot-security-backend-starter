@@ -4,7 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woundeddragons.securitystarter.business.model.CustomUserDetails;
 import com.woundeddragons.securitystarter.business.service.CustomUserDetailsService;
 import com.woundeddragons.securitystarter.web.api.Constants;
-import com.woundeddragons.securitystarter.web.api.v1.response.JWTProcessorResponse;
+import com.woundeddragons.securitystarter.web.api.v1.response.BaseResponse;
+import com.woundeddragons.securitystarter.web.common.ErrorsEnum;
 import com.woundeddragons.securitystarter.web.common.JWTUtils;
 import com.woundeddragons.securitystarter.web.common.WebSecurityConstants;
 import io.jsonwebtoken.Claims;
@@ -13,7 +14,7 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -40,46 +41,49 @@ public class JWTProcessorFilter extends OncePerRequestFilter {
     private ServletContext servletContext;
 
     @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+    protected boolean shouldNotFilter(HttpServletRequest request) {
         String servletContextPath = this.servletContext.getContextPath();
-        return !request.getRequestURI().startsWith(servletContextPath + Constants.API_PATH);
+        String header = request.getHeader(WebSecurityConstants.HEADER_STRING);
+        return !request.getRequestURI().startsWith(servletContextPath + Constants.API_PATH)
+                || header == null
+                || !header.startsWith(WebSecurityConstants.JWT_PREFIX);
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain fc) throws ServletException, IOException {
         String header = req.getHeader(WebSecurityConstants.HEADER_STRING);
-        if (header == null || !header.startsWith(WebSecurityConstants.JWT_PREFIX)) {
-            fc.doFilter(req, res);
-            return;
-        }
-
         String jwt = header.substring(WebSecurityConstants.JWT_PREFIX.length());
         try {
-            SecurityContextHolder.getContext().setAuthentication(buildAuthenticationFromJWT(jwt));
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = buildAuthenticationFromJWT(jwt);
+            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
             fc.doFilter(req, res);
         } catch (UsernameNotFoundException | ExpiredJwtException | MalformedJwtException | SignatureException e) {
-            int httpStatusCode = HttpStatus.UNAUTHORIZED.value();
-            //TODO: Error codes
-            int responseErrorCode = -1;
-            String responseErrorMessage = null;
+
+            ErrorsEnum errorsEnum;
             if (e instanceof UsernameNotFoundException) {
-                httpStatusCode = HttpStatus.NOT_FOUND.value();
-                responseErrorCode = httpStatusCode;
-                responseErrorMessage = "Username not found !";
+                errorsEnum = ErrorsEnum.USERNAME_NOT_FOUND;
+            } else if (e instanceof CredentialsExpiredException) {
+                errorsEnum = ErrorsEnum.CREDENTIALS_EXPIRED;
+            } else if (e instanceof LockedException) {
+                errorsEnum = ErrorsEnum.ACCOUNT_LOCKED;
+            } else if (e instanceof DisabledException) {
+                errorsEnum = ErrorsEnum.ACCOUNT_DISABLED;
+            } else if (e instanceof AccountExpiredException) {
+                errorsEnum = ErrorsEnum.ACCOUNT_EXPIRED;
             } else if (e instanceof ExpiredJwtException) {
-                responseErrorCode = 99;
-                responseErrorMessage = "Token is expired !";
+                errorsEnum = ErrorsEnum.JWT_EXPIRED;
             } else if (e instanceof MalformedJwtException) {
-                responseErrorCode = 99;
-                responseErrorMessage = "Token is malformed !";
+                errorsEnum = ErrorsEnum.JWT_MALFORMED;
+            } else if (e instanceof SignatureException) {
+                errorsEnum = ErrorsEnum.JWT_SIGNATURE_INVALID;
             } else {
-                responseErrorCode = 99;
-                responseErrorMessage = "Token signature cannot be validated, token may be tampered !";
+                errorsEnum = ErrorsEnum.GENERIC_JWT_PROCESS;
             }
 
+            int httpStatusCode = HttpStatus.UNAUTHORIZED.value();
             ObjectMapper jacksonObjectMapper = new ObjectMapper();
-            JWTProcessorResponse toRet = new JWTProcessorResponse();
-            toRet.addResponseError(responseErrorCode, responseErrorMessage);
+            BaseResponse toRet = new BaseResponse();
+            toRet.addResponseError(errorsEnum);
             res.setStatus(httpStatusCode);
             res.setContentType("application/json");
             res.getOutputStream().write(jacksonObjectMapper.writeValueAsBytes(toRet));
@@ -88,16 +92,29 @@ public class JWTProcessorFilter extends OncePerRequestFilter {
 
     private UsernamePasswordAuthenticationToken buildAuthenticationFromJWT(String jwt) {
         Claims claims = JWTUtils.parseClaims(jwt);
-        // Extract the Username
         String username = claims.getSubject();
         CustomUserDetails customUserDetails = (CustomUserDetails) this.customUserDetailsService.loadUserByUsername(username);
-        //TODO: Logica para validar usuario deshabilitado, eliminado, etc
-        //throw XXXException dependiendo del caso
+
+        if (!customUserDetails.isCredentialsNonExpired()) {
+            throw new CredentialsExpiredException(null);
+        }
+
+        if (!customUserDetails.isAccountNonLocked()) {
+            throw new LockedException(null);
+        }
+
+        if (!customUserDetails.isEnabled()) {
+            throw new DisabledException(null);
+        }
+
+        if (!customUserDetails.isAccountNonExpired()) {
+            throw new AccountExpiredException(null);
+        }
 
         List<String> securityRolesList = JWTUtils.getSecurityRoles(claims);
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
         if (securityRolesList != null && !securityRolesList.isEmpty()) {
-            securityRolesList.stream().forEach(roleName -> {
+            securityRolesList.forEach(roleName -> {
                 grantedAuthorities.add(new SimpleGrantedAuthority(roleName));
                 logger.debug("Added Granted Authority: " + roleName);
             });
