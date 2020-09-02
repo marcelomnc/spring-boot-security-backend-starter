@@ -6,6 +6,7 @@ import com.woundeddragons.securitystarter.web.api.v1.Constants;
 import com.woundeddragons.securitystarter.web.api.v1.request.T2FACodeVerificationRequest;
 import com.woundeddragons.securitystarter.web.api.v1.response.AuthenticationResponse;
 import com.woundeddragons.securitystarter.web.common.AuthHelper;
+import com.woundeddragons.securitystarter.web.common.ErrorsEnum;
 import org.jboss.aerogear.security.otp.Totp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,7 @@ public class T2FACodeVerificationController {
     private AuthHelper authHelper;
 
     @PostMapping(path = PATH)
-    public ResponseEntity doAuthentication(@RequestBody @Valid T2FACodeVerificationRequest t2FACodeVerificationRequest) {
+    public ResponseEntity<AuthenticationResponse> doAuthentication(@RequestBody @Valid T2FACodeVerificationRequest t2FACodeVerificationRequest) {
         ResponseEntity toRet = null;
         AuthenticationResponse authenticationResponse = null;
 
@@ -47,8 +48,7 @@ public class T2FACodeVerificationController {
             toRet = ResponseEntity.ok().body(authenticationResponse);
         } else {
             authenticationResponse = new AuthenticationResponse();
-            //TODO: Error code
-            authenticationResponse.addResponseError(99, "The 2fa code: '" + t2FACodeVerificationRequest.getT2FACode() + "', is not valid !");
+            authenticationResponse.addResponseError(ErrorsEnum.INVALID_2FA_CODE);
             authenticationResponse.setMustVerify2FACode(true);
             toRet = ResponseEntity.badRequest().body(authenticationResponse);
         }
