@@ -7,10 +7,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class JWTUtils {
 
@@ -18,10 +15,9 @@ public class JWTUtils {
         Date tokenIssuedAtDate = new Date();
         Date tokenExpirationDate = new Date(tokenIssuedAtDate.getTime() + WebSecurityConstants.JWT_EXPIRATION_MILLIS);
 
-        //TODO: Setear JTI o no ?
         Claims claims = Jwts.claims();
         claims.setSubject(user.getDsEmail())
-                .setId("dewde32323")
+                .setId(UUID.randomUUID().toString())
                 .setIssuedAt(tokenIssuedAtDate)
                 .setExpiration(tokenExpirationDate);
 
@@ -36,7 +32,7 @@ public class JWTUtils {
                 securityRolesList.add(roleByUser.getNmRoleId().getDsName());
             });
         }
-        claims.put(WebSecurityConstants.JWT_ROLES_CLAIM, securityRolesList);
+        claims.put(WebSecurityConstants.JWT_ROLES_CLAIM_KEY, securityRolesList);
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -53,6 +49,6 @@ public class JWTUtils {
     }
 
     public static List<String> getSecurityRoles(Claims claims) {
-        return (List<String>) claims.get(WebSecurityConstants.JWT_ROLES_CLAIM);
+        return (List<String>) claims.get(WebSecurityConstants.JWT_ROLES_CLAIM_KEY);
     }
 }
