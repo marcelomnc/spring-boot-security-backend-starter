@@ -25,15 +25,15 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(path = Constants.API_VERSION_PATH)
 @RolesAllowed({SecurityRole.Names.ROLE_2FA_CODE_VERIFICATION})
-public class T2FACodeVerificationController {
-    private static final Logger logger = LoggerFactory.getLogger(T2FACodeVerificationController.class);
-    public static final String PATH = "/2fa";
+public class User2FAController {
+    private static final Logger logger = LoggerFactory.getLogger(User2FAController.class);
+    public static final String PATH = "/user/2fa";
 
     @Autowired
     private AuthHelper authHelper;
 
     @PostMapping(path = PATH)
-    public ResponseEntity<AuthenticationResponse> doAuthentication(@RequestBody @Valid T2FACodeVerificationRequest t2FACodeVerificationRequest) {
+    public ResponseEntity<AuthenticationResponse> doVerification(@RequestBody @Valid T2FACodeVerificationRequest t2FACodeVerificationRequest) {
         ResponseEntity toRet = null;
         AuthenticationResponse authenticationResponse = null;
 

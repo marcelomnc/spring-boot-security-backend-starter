@@ -24,9 +24,9 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping(path = Constants.API_VERSION_PATH)
-public class AuthenticationController {
-    private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
-    public static final String PATH = "/auth";
+public class UserAuthenticationController {
+    private static final Logger logger = LoggerFactory.getLogger(UserAuthenticationController.class);
+    public static final String PATH = "/user/auth";
 
     @Autowired
     private AuthenticationManager authenticationManager;

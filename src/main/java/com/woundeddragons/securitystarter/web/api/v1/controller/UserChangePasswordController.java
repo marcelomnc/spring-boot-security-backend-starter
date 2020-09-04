@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,8 +23,8 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(path = Constants.API_VERSION_PATH)
 @RolesAllowed({SecurityRole.Names.ROLE_ADMIN, SecurityRole.Names.ROLE_USER})
-public class ChangePasswordController {
-    public static final String PATH = "/user/changepassword";
+public class UserChangePasswordController {
+    public static final String PATH = "/user/password";
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -32,7 +32,8 @@ public class ChangePasswordController {
     @Autowired
     private UserService userService;
 
-    @PutMapping(path = PATH)
+    @PostMapping(path = PATH)
+    //TODO: Refactor generic responses for all controllers !
     public ResponseEntity doChangePassword(@RequestBody @Valid ChangePasswordRequest changePasswordRequest) {
         ResponseEntity toRet = null;
         CustomUserDetails customUserDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

@@ -25,8 +25,8 @@ import java.net.HttpURLConnection;
 @RestController
 @RequestMapping(path = Constants.API_VERSION_PATH)
 @RolesAllowed({SecurityRole.Names.ROLE_ADMIN, SecurityRole.Names.ROLE_USER})
-public class UserController {
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+public class UserUpdateController {
+    private static final Logger logger = LoggerFactory.getLogger(UserUpdateController.class);
     public static final String PATH = "/user";
 
     @Autowired
