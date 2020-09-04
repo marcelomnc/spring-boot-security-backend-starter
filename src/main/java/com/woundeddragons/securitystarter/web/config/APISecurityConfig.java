@@ -2,7 +2,7 @@ package com.woundeddragons.securitystarter.web.config;
 
 import com.woundeddragons.securitystarter.business.service.CustomUserDetailsService;
 import com.woundeddragons.securitystarter.web.api.v1.Constants;
-import com.woundeddragons.securitystarter.web.api.v1.controller.AuthenticationController;
+import com.woundeddragons.securitystarter.web.api.v1.controller.UserAuthenticationController;
 import com.woundeddragons.securitystarter.web.api.v1.controller.UserSignUpController;
 import com.woundeddragons.securitystarter.web.filter.JWTProcessorFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +17,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -46,16 +48,27 @@ public class APISecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                //TODO: Adjust your CORS origins here !
+                registry.addMapping(Constants.API_VERSION_PATH + "/**").allowedOrigins("http://localhost:3000");
+            }
+        };
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf()
                 .disable()
                 .cors()
-                .disable()
+                .and()
                 .antMatcher(com.woundeddragons.securitystarter.web.api.Constants.API_PATH + "/**")
                 .authorizeRequests()
-                .antMatchers(Constants.API_VERSION_PATH + AuthenticationController.PATH)
+                .antMatchers(Constants.API_VERSION_PATH + UserAuthenticationController.PATH)
                 .permitAll()
                 .antMatchers(Constants.API_VERSION_PATH + UserSignUpController.PATH)
                 .permitAll()
