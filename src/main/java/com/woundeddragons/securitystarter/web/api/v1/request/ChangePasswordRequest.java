@@ -1,6 +1,7 @@
 package com.woundeddragons.securitystarter.web.api.v1.request;
 
 
+import com.woundeddragons.securitystarter.web.api.common.request.BaseRequest;
 import com.woundeddragons.securitystarter.web.api.common.validator.PasswordConfirmation;
 import com.woundeddragons.securitystarter.web.api.common.validator.ValidPassword;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @PasswordConfirmation
-public class ChangePasswordRequest implements SecurityCredentialsRequest {
+public class ChangePasswordRequest extends BaseRequest implements SecurityCredentialsRequest {
     @NotNull(message = "You must send the current password with this request.")
     @Size(min = 1, max = 255)
     private String currentPassword;

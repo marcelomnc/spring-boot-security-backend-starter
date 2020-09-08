@@ -1,5 +1,6 @@
 package com.woundeddragons.securitystarter.web.api.v1.request;
 
+import com.woundeddragons.securitystarter.web.api.common.request.BaseRequest;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,7 +9,7 @@ import javax.validation.constraints.Size;
 
 @Getter
 @Setter
-public class UserDataRequest {
+public class UserDataRequest extends BaseRequest {
     @NotNull(message = "You must send a first name with this request.")
     @Size(min = 1, max = 100)
     private String firstName;
