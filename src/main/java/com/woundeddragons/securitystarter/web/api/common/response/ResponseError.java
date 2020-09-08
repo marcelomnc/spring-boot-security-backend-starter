@@ -1,4 +1,4 @@
-package com.woundeddragons.securitystarter.web.api.v1.response;
+package com.woundeddragons.securitystarter.web.api.common.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;

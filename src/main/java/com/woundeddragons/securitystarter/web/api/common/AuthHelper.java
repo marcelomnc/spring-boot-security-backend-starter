@@ -1,4 +1,4 @@
-package com.woundeddragons.securitystarter.web.common;
+package com.woundeddragons.securitystarter.web.api.common;
 
 import com.woundeddragons.securitystarter.business.model.RoleByUser;
 import com.woundeddragons.securitystarter.business.model.User;

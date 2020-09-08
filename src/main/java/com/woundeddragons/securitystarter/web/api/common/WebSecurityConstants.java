@@ -1,4 +1,4 @@
-package com.woundeddragons.securitystarter.web.common;
+package com.woundeddragons.securitystarter.web.api.common;
 
 public class WebSecurityConstants {
     //TODO: Extract this value to a property @value{} ?

@@ -1,4 +1,4 @@
-package com.woundeddragons.securitystarter.web.api.v1.validator;
+package com.woundeddragons.securitystarter.web.api.common.validator;
 
 import org.passay.*;
 

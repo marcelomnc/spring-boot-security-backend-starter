@@ -1,13 +1,13 @@
-package com.woundeddragons.securitystarter.web.filter;
+package com.woundeddragons.securitystarter.web.api.common.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woundeddragons.securitystarter.business.model.CustomUserDetails;
 import com.woundeddragons.securitystarter.business.service.CustomUserDetailsService;
 import com.woundeddragons.securitystarter.web.api.Constants;
-import com.woundeddragons.securitystarter.web.api.v1.response.BaseResponse;
-import com.woundeddragons.securitystarter.web.common.ErrorsEnum;
-import com.woundeddragons.securitystarter.web.common.JWTUtils;
-import com.woundeddragons.securitystarter.web.common.WebSecurityConstants;
+import com.woundeddragons.securitystarter.web.api.common.response.BaseResponse;
+import com.woundeddragons.securitystarter.web.api.common.response.ErrorsEnum;
+import com.woundeddragons.securitystarter.web.api.common.JWTUtils;
+import com.woundeddragons.securitystarter.web.api.common.WebSecurityConstants;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;

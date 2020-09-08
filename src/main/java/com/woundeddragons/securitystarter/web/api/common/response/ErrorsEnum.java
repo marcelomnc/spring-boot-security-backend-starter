@@ -1,4 +1,4 @@
-package com.woundeddragons.securitystarter.web.common;
+package com.woundeddragons.securitystarter.web.api.common.response;
 
 import lombok.Getter;
 

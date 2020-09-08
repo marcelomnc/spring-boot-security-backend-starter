@@ -6,7 +6,7 @@ import com.woundeddragons.securitystarter.business.model.User;
 import com.woundeddragons.securitystarter.business.service.UserService;
 import com.woundeddragons.securitystarter.web.api.v1.Constants;
 import com.woundeddragons.securitystarter.web.api.v1.request.ChangePasswordRequest;
-import com.woundeddragons.securitystarter.web.api.v1.response.BaseResponse;
+import com.woundeddragons.securitystarter.web.api.common.response.BaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,5 +1,6 @@
-package com.woundeddragons.securitystarter.web.api.v1.response;
+package com.woundeddragons.securitystarter.web.api.common.response;
 
+import com.woundeddragons.securitystarter.web.api.common.response.BaseResponse;
 import lombok.Getter;
 import lombok.Setter;
 
