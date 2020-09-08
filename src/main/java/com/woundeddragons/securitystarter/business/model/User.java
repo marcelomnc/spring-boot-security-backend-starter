@@ -24,7 +24,7 @@ import java.util.Date;
         @NamedQuery(name = "User.findByYn2faEnabled", query = "SELECT u FROM User u WHERE u.yn2faEnabled = :yn2faEnabled"),
         @NamedQuery(name = "User.findByDtCreatedOn", query = "SELECT u FROM User u WHERE u.dtCreatedOn = :dtCreatedOn"),
         @NamedQuery(name = "User.findByDtLastLoginOn", query = "SELECT u FROM User u WHERE u.dtLastLoginOn = :dtLastLoginOn"),
-        @NamedQuery(name = "User.findByDtDeletedOn", query = "SELECT u FROM User u WHERE u.dtDeletedOn = :dtDeletedOn"),
+        @NamedQuery(name = "User.findByDtDeletedOn", query = "SELECT u FROM User u WHERE u.dtExpiredOn = :dtDeletedOn"),
         @NamedQuery(name = "User.existsByEmail", query = "SELECT (count(u.nmId) > 0) as exists FROM User u WHERE u.dsEmail = :email and u.nmId <> :userId")})
 public class User implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -70,9 +70,15 @@ public class User implements Serializable {
     @Column(name = "dt_last_login_on")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dtLastLoginOn;
-    @Column(name = "dt_deleted_on")
+    @Column(name = "dt_locked_on")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date dtDeletedOn;
+    private Date dtLockedOn;
+    @Column(name = "dt_disabled_on")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dtDisabledOn;
+    @Column(name = "dt_expired_on")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dtExpiredOn;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "nmUserId")
     private Collection<RoleByUser> rolesByUserCollection;
 
@@ -108,7 +114,9 @@ public class User implements Serializable {
                 ", ds2faSecret='" + ds2faSecret + '\'' +
                 ", dtCreatedOn=" + dtCreatedOn +
                 ", dtLastLoginOn=" + dtLastLoginOn +
-                ", dtDeletedOn=" + dtDeletedOn +
+                ", dtLockedOn=" + dtLockedOn +
+                ", dtDisabledOn=" + dtDisabledOn +
+                ", dtExpiredOn=" + dtExpiredOn +
                 ", rolesByUserCollection=" + rolesByUserCollection +
                 '}';
     }

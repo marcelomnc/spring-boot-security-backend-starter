@@ -38,12 +38,12 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return this.user.getDtExpiredOn() == null;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return this.user.getDtLockedOn() == null;
     }
 
     @Override
@@ -53,6 +53,6 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return this.user.getDtDeletedOn() == null;
+        return this.user.getDtDisabledOn() == null;
     }
 }
