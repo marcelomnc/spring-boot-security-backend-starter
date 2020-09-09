@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserSignUpResponse extends BaseResponse {
+public class UserAccountDataResponse extends BaseResponse {
     private boolean t2FAEnabled;
     private String t2FAQRCodeImageURL;
 }
