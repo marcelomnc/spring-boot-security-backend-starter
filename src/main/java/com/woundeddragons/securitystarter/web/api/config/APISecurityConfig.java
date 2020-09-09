@@ -1,10 +1,11 @@
 package com.woundeddragons.securitystarter.web.api.config;
 
 import com.woundeddragons.securitystarter.business.service.CustomUserDetailsService;
+import com.woundeddragons.securitystarter.web.api.common.filter.JWTProcessorFilter;
 import com.woundeddragons.securitystarter.web.api.v1.Constants;
+import com.woundeddragons.securitystarter.web.api.v1.controller.JWTController;
 import com.woundeddragons.securitystarter.web.api.v1.controller.UserAuthenticationController;
 import com.woundeddragons.securitystarter.web.api.v1.controller.UserSignUpController;
-import com.woundeddragons.securitystarter.web.api.common.filter.JWTProcessorFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -71,6 +72,8 @@ public class APISecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(Constants.API_VERSION_PATH + UserAuthenticationController.PATH)
                 .permitAll()
                 .antMatchers(Constants.API_VERSION_PATH + UserSignUpController.PATH)
+                .permitAll()
+                .antMatchers(Constants.API_VERSION_PATH + JWTController.PATH)
                 .permitAll()
                 .anyRequest()
                 .authenticated()
