@@ -1,9 +1,10 @@
-package com.woundeddragons.securitystarter.web.api.common;
+package com.woundeddragons.securitystarter.web.api.common.delegate;
 
 import com.woundeddragons.securitystarter.business.model.RoleByUser;
 import com.woundeddragons.securitystarter.business.model.User;
 import com.woundeddragons.securitystarter.business.service.RoleByUserService;
 import com.woundeddragons.securitystarter.business.service.UserService;
+import com.woundeddragons.securitystarter.web.api.common.JWTUtils;
 import com.woundeddragons.securitystarter.web.api.v1.response.AuthenticationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,7 +13,7 @@ import java.util.Collection;
 import java.util.Date;
 
 @Component
-public class AuthHelper {
+public class AuthenticationDelegate {
     @Autowired
     private UserService userService;
 
